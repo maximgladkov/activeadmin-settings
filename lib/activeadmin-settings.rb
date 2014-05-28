@@ -19,12 +19,14 @@ module ActiveadminSettings
 
   mattr_accessor :image_file_types
   @@image_file_types = ["jpg", "jpeg", "png", "gif", "tiff"]
-  
+
   mattr_accessor :config_file
   @@config_file = "config/activeadmin_settings.yml"
 
   # Load configuration from config/activeadmin_settings.yml
   def self.load_config
+    return @load_config if @load_config
+
     config_file = ::Rails.root.join(@@config_file)
     @load_config = {}
 
@@ -36,6 +38,8 @@ module ActiveadminSettings
   end
 
   def self.all_settings
+    return @all_settings if @all_settings
+
     @all_settings = {}
     load_config.each do |key, settings|
       @all_settings.merge!(settings)
@@ -44,6 +48,8 @@ module ActiveadminSettings
   end
 
   def self.groups
+    return @groups if @groups
+
     @groups = []
     load_config.each do |key, settings|
       @groups << {:name     => key,
