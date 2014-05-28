@@ -91,19 +91,8 @@ module ActiveadminSettings
         attr_accessible :name, :string, :file, :remove_file, :locale
       end
 
-      def self.values
-        @values ||= all.inject({}) do |hash, setting|
-          hash[setting.name] ||= {}
-          hash[setting.name][setting.locale] = setting.value
-        end
-      end
-
-      def self.cached_value(name, locale)
-        values[name][locale] if values[name] && values[name, locale]
-      end
-
       def self.value(name, locale)
-        cached_value(name, locale) || find_or_create_by_name_and_locale(name, (locale || I18n.locale)).value
+        find_or_create_by_name_and_locale(name, (locale || I18n.locale)).value
       end
     end
   end
