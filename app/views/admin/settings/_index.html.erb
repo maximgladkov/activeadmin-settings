@@ -5,7 +5,7 @@
         <a class="table_tools_button" href="#<%= g[:slug] %>"><%= g[:name] %></a>
       </li>
     <% end %>
-    <li><a class="table_tools_button" href="#admins"><%=t '.admins' %></a></li>
+    <!-- <li><a class="table_tools_button" href="#admins"><%=t '.admins' %></a></li> -->
   </ul>
 
   <% groups.each do |g| %>
@@ -14,7 +14,7 @@
     </div>
   <% end %>
 
-  <div id="admins">
+  <!-- <div id="admins">
     <%= render :partial => "admins_table", :locals => {:admins => admins} %>
-  </div>
+  </div> -->
 </div>

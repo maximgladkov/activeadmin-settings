@@ -8,7 +8,7 @@ module ActiveadminSettings
       # base.validates_uniqueness_of :name, scope: :locale
       # base.validates_length_of     :name, minimum: 1
 
-      base.validates :name, presence: true, uniqueness: { scope: :locale }, length: { minimum: 1 }
+      base.validates :name, presence: true, uniqueness: { scope: [:locale, :territory_id] }, length: { minimum: 1 }
 
       base.extend ClassMethods
     end
@@ -16,9 +16,10 @@ module ActiveadminSettings
 
     # Class
     module ClassMethods
-      def initiate_setting(name, locale = nil)
+      def initiate_setting(name, locale = nil, territory = nil)
         locale ||= I18n.default_locale
-        setting = self.new(name: name, locale: locale.to_s)
+        territory ||= Territory.current
+        setting = self.new(name: name, locale: locale.to_s, territory_id: territory.id)
         if setting.type == "text" or setting.type == "html"
           setting.string = setting.default_value
         end
@@ -88,12 +89,15 @@ module ActiveadminSettings
       include SettingMethods
 
       unless Rails::VERSION::MAJOR > 3 && !defined? ProtectedAttributes
-        attr_accessible :name, :string, :file, :remove_file, :locale
+        attr_accessible :name, :string, :file, :remove_file, :locale, :territory, :territory_id
       end
 
-      def self.value(name, locale)
-        find_or_create_by_name_and_locale(name, (locale || I18n.locale)).value
+      belongs_to :territory
+
+      def self.value(name, locale, territory)
+        find_or_create_by_name_and_locale_and_territory_id(name, (locale || I18n.locale), territory.id).value
       end
+
     end
   end
 end
