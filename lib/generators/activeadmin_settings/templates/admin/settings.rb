@@ -2,12 +2,12 @@ ActiveAdmin.register_page "Settings" do
 
   menu label: ActiveadminSettings::Setting.model_name.human
 
-  content title: ActiveadminSettings::Setting.model_name.human do    
+  content title: ActiveadminSettings::Setting.model_name.human do
     # Mergin db settings objects and default values
     # from config/activaadmin_settings.yml file.
 
     all_settings  = {}
-    ActiveadminSettings::Setting.all.each do |setting|
+    ActiveadminSettings::Setting.group('id').each do |setting|
       locale = setting.locale || I18n.default_locale
       if all_settings[setting.name]
         all_settings[setting.name][locale] = setting
@@ -18,6 +18,7 @@ ActiveAdmin.register_page "Settings" do
 
     groups = ActiveadminSettings.groups
     groups.each do |group|
+      group[:settings] = []
       group[:default_settings].each_key do |name|
         settings_hash = all_settings[name]
         if settings_hash and !settings_hash.empty?
@@ -27,7 +28,7 @@ ActiveAdmin.register_page "Settings" do
           (I18n.available_locales - settings_hash.keys.map(&:to_sym)).each do |locale|
             settings << ActiveadminSettings::Setting.initiate_setting(name, locale)
           end
-        else  
+        else
           settings = []
           # add settings for available locales
           I18n.available_locales.each do |locale|
