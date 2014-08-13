@@ -92,7 +92,7 @@ module ActiveadminSettings
       end
 
       def self.value(name, locale)
-        find_or_create_by_name_and_locale(name, (locale || I18n.locale)).value
+        where(name: name, locale: (locale || I18n.locale)).first.value
       end
     end
   end
